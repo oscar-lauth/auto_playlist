@@ -18,6 +18,10 @@ app.add_middleware(
 app.include_router(songs.router)
 app.include_router(user_auth.router)
 
+# @app.on_event("startup")
+# async def startup_event():
+#     session = aiohttp.ClientSession()
+
 @app.get("/")
 async def root():
     return {"message": "Hello There"}
