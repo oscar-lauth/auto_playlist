@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import songs
 from routers import user_auth
+from routers import playlist
 
 app = FastAPI()
 
@@ -17,6 +18,7 @@ app.add_middleware(
 
 app.include_router(songs.router)
 app.include_router(user_auth.router)
+app.include_router(playlist.router)
 
 # @app.on_event("startup")
 # async def startup_event():
