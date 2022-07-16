@@ -1,10 +1,13 @@
-from spotify_api.user_data import req_refreshed_access_token
+
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import RedirectResponse
 import random
 import string
-from spotify_api.user_data import req_access_token
-from SECRETS import CLIENT_ID
+from spotify.utils import req_access_token
+
+
+CLIENT_ID="a37b32d54f1e449f9041e37e4f435ada"
+CLIENT_SECRET="c900c785b7134520b9dce8b54af61405"
 
 router = APIRouter()
 
@@ -31,5 +34,6 @@ async def callback(state:str,code:str = None, error:str = None):
     
 @router.get("/refresh_token")
 async def req_refresh():
-    return req_refreshed_access_token()
+    pass
+    # return req_refreshed_access_token()
 

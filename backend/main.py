@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import songs
 from routers import user_auth
 from routers import playlist
+import uvicorn
 
 app = FastAPI()
 
@@ -27,3 +28,13 @@ app.include_router(playlist.router)
 @app.get("/")
 async def root():
     return {"message": "Hello There"}
+
+
+if __name__ == "__main__":
+    uvicorn.run(
+        "main:app",
+        host="localhost",
+        port=8000,
+        log_level="info",
+        reload=True
+    )
