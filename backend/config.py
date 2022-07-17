@@ -13,3 +13,5 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings():
     return Settings()
+
+# remember to cd into /backend or else .env won't be read

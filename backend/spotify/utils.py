@@ -7,7 +7,8 @@ import config
 from fastapi import Depends
 
 
-def req_access_token(code:str,redirect_uri:str,settings:config.Settings=Depends(config.get_settings)):
+def req_access_token(code:str,redirect_uri:str):
+    settings:config.Settings = config.get_settings()
     auth_params = {
         "grant_type":"authorization_code",
         "code":code,
