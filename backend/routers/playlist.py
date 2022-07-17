@@ -1,4 +1,3 @@
-from venv import create
 from fastapi import APIRouter
 from spotify.api import create_playlist
 
