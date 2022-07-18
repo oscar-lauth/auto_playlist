@@ -6,7 +6,7 @@ import base64
 import config
 
 
-def req_access_token(code:str,redirect_uri:str):
+def req_access_token(code:str,redirect_uri:str)->dict:
     settings:config.Settings = config.get_settings()
     auth_params = {
         "grant_type":"authorization_code",
