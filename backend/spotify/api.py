@@ -96,11 +96,20 @@ def create_playlist(name:str,description:str="Desc",is_public:bool=False)->dict:
 
 # add songs to User's playlist from Spotify song URI's
 def add_songs_to_playlist(song_uris:list[str])->dict:
-
+    params = build_seed()
     url = spotify_base_url + f"/playlists/{user.p_id}/tracks"
     params = {"uris":song_uris}
     headers = {"Authorization":f"Bearer {user.access_token}","Content-Type":"application/json"}
     response = requests.post(url,data=json.dumps(params),headers=headers)
+    res_dict = response.json()
+    return res_dict
+
+def get_recommendations(limit:int=20)->dict:
+    url = spotify_base_url + "/recommendations"
+    params = build_seed([3,2,0])
+    params.update({"limit":limit})
+    headers = {"Authorization":f"Bearer {user.access_token}","Content-Type":"application/json"}
+    response = requests.get(url,params=params,headers=headers)
     res_dict = response.json()
     return res_dict
 
@@ -121,28 +130,48 @@ def get_top_artists_raw(limit:int=20,offset:int=0,time_range:str="medium_term")-
     res_dict = response.json()
     return res_dict
 
+def get_available_genre_seeds()->list[str]:
+    url = spotify_base_url + f"/recommendations/available-genre-seeds"
+    headers = {"Authorization":f"Bearer {user.access_token}","Content-Type":"application/json"}
+    response = requests.get(url,headers=headers)
+    res_dict = response.json()
+    return res_dict["genres"]
+
 
 
 def get_seed_tracks(top_tracks_raw:dict)->list[str]:
-    song_uris = [str]
+    track_ids:list[str]=[]
     top_tracks = top_tracks_raw["items"]
     for track in top_tracks:
-        song_uris.append(track["uri"])
-    return song_uris
+        track_ids.append(track["id"])
+    return track_ids
 
 
-def get_seed_artists(top_artists_raw:dict)->list[str]:
-    artist_uris = [str]
+# tracks don't have genres, only artists so this function uses raw top artists to get both artists and genre 
+def get_seed_artists_and_genres(top_artists_raw:dict)->dict:
+    artist_ids:list[str]=[]
+    genres:list[str]=[]
+    available_genres = get_available_genre_seeds()
     top_artists = top_artists_raw["items"]
     for artist in top_artists:
-        artist_uris.append(artist["uri"])
-    return artist_uris
+        artist_ids.append(artist["id"])
+        if(artist["genres"] in available_genres):
+            genres.append(artist["genres"])
+    return {"artist_ids":artist_ids,"genres":genres}
 
-def get_seed_genres(top_genres_raw:dict)->list[str]:
-    pass
   
-def build_seed()->list[str]:
-    pass
+def build_seed(num_values:list[int])->dict:
+    if(len(num_values)!=3 or sum(num_values)>5):
+        return ["Error, invalid parameters"]
+    (n_tracks,n_artists,n_genres) = num_values
+    seed_tracks = get_seed_tracks(get_top_tracks_raw())[:n_tracks]
+    seed_artists_genres_dict = get_seed_artists_and_genres(get_top_artists_raw())
+    seed_artists = seed_artists_genres_dict["artist_ids"][:n_artists]
+    seed_genres = seed_artists_genres_dict["genres"][:n_genres]
+    return {"seed_tracks":seed_tracks,"seed_artists":seed_artists,"seed_genres":seed_genres}
+
+
+
 
 
 
