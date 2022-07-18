@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Cookie
 from fastapi.responses import RedirectResponse
 import random
 import string
@@ -19,18 +19,16 @@ async def login_user(settings:config.Settings=Depends(config.get_settings)):
     q_params = f"client_id={settings.client_id}&response_type=code&redirect_uri={redirect_uri}&state={state}&scope={scope}"
     url = f"https://accounts.spotify.com/authorize?{q_params}"
     response = RedirectResponse(url=url)
+    response.set_cookie(key="stored_state",value=state)
     return response
 
 @router.get("/callback")
-async def callback(state:str,code:str = None, error:str = None):
+async def callback(state:str,code:str = None, error:str = None,stored_state:str=Cookie()):
     if error=="access_denied":
         raise HTTPException(status_code=401)
-    elif state != state:
+    elif state != stored_state:
         raise HTTPException(status_code=401,detail="state mismatch")
     return req_access_token(code,redirect_uri)
     
-@router.get("/refresh_token")
-async def req_refresh():
-    pass
-    # return req_refreshed_access_token()
+
 
