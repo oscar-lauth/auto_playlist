@@ -12,8 +12,8 @@ class User(BaseModel):
     # Spotify ID of User
     id:str | None
 
-    # User access token
-    __access_token:str | None # only to be accessed with init_user, otherwise use .access_token
+    # *internal* User access token
+    access_token_:str | None # only to be accessed with init_user, otherwise use .access_token
 
     # User refresh token
     refresh_token:str | None 
@@ -31,12 +31,12 @@ class User(BaseModel):
             res_dict = req_refreshed_access_token()
 
             # set new access token
-            self.__access_token = res_dict["access_token"]
+            self.access_token_ = res_dict["access_token"]
 
             # set new expiration time
             self.expires = res_dict["expires_in"] + int(time.time())
 
-        return self.__access_token
+        return self.access_token_
 
 
 def init_user(access_token:str,refresh_token:str,expires_in:int):
@@ -53,7 +53,7 @@ def init_user(access_token:str,refresh_token:str,expires_in:int):
 
      # create User
     global user
-    user = User(id=res_dict["id"],__access_token=access_token,refresh_token=refresh_token,expires=expire_time)
+    user = User(id=res_dict["id"],access_token_=access_token,refresh_token=refresh_token,expires=expire_time)
 
     return {"Success": user}
 
