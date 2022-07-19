@@ -96,13 +96,13 @@ def create_playlist(name:str,description:str="Desc",is_public:bool=False)->dict:
 
 # add songs to User's playlist from Spotify song URI's
 def add_songs_to_playlist(song_uris:list[str])->dict:
-    params = build_seed()
     url = spotify_base_url + f"/playlists/{user.p_id}/tracks"
     params = {"uris":song_uris}
     headers = {"Authorization":f"Bearer {user.access_token}","Content-Type":"application/json"}
     response = requests.post(url,data=json.dumps(params),headers=headers)
     res_dict = response.json()
     return res_dict
+
 
 def get_recommendations(limit:int=20)->dict:
     url = spotify_base_url + "/recommendations"
@@ -169,6 +169,13 @@ def build_seed(num_values:list[int])->dict:
     seed_artists = seed_artists_genres_dict["artist_ids"][:n_artists]
     seed_genres = seed_artists_genres_dict["genres"][:n_genres]
     return {"seed_tracks":seed_tracks,"seed_artists":seed_artists,"seed_genres":seed_genres}
+
+def generate_playlist(size:int=20):
+    song_uris:list[str]=[]
+    raw_recs:dict=get_recommendations(size)
+    for track in raw_recs["tracks"]:
+        song_uris.append(track["uri"])
+    return add_songs_to_playlist(song_uris)
 
 
 
