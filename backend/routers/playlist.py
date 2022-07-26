@@ -4,9 +4,9 @@ from spotify.api import create_playlist
 
 router = APIRouter()
 
-@router.post("/playlist/generate",status_code=201,description="Add songs")
-async def add_songs(size:int=20):
-    response = generate_playlist(size)
+@router.post("/playlist/generate/{p_id}",status_code=201,description="Add songs")
+async def add_songs(p_id:str,size:int=20):
+    response = generate_playlist(p_id,size)
     return response
 
 @router.post("/playlist/{name}",status_code=201,description="Creates new playlist by name")
