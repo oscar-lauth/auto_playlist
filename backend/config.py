@@ -5,6 +5,7 @@ class Settings(BaseSettings):
 
     client_id:str
     client_secret:str
+    frontend_url:str
 
     class Config:
         env_file = '.env'

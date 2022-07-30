@@ -2,10 +2,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import songs, user_auth, playlist
 import uvicorn
+import config
 
 app = FastAPI()
 
-origins = ['http://localhost:3000']
+
+settings:config.Settings=config.get_settings()
+
+origins = [settings.frontend_url]
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,6 +26,10 @@ app.include_router(playlist.router)
 # @app.on_event("startup")
 # async def startup_event():
 #     session = aiohttp.ClientSession()
+
+@app.get("/test")
+async def test():
+    return {"Test":"Good"}
 
 @app.get("/")
 async def root():
