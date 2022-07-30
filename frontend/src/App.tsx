@@ -1,20 +1,18 @@
 import React from 'react';
-import LoginButton from './components/LoginButton';
-import PlaylistHeader from './components/PlaylistHeader';
-import SongList from './components/SongList';
-import PlaylistButton from './components/PlaylistButton';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Quiz from './pages/Quiz';
+import Login from './pages/Login';
 
 function App() {
   return (
-    
+     <Router>
        <div className="App">
-        <div className="playlist-container">
-          <PlaylistHeader/>
-          <PlaylistButton/>
-          <SongList/>
-      </div>
+      <Routes>
+        <Route path='/' element={<Login/>}/>
+        <Route path='/quiz' element={<Quiz/>}/>
+      </Routes>
     </div>
-  
+     </Router>
   );
 }
 
