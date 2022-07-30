@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { Outlet,Link } from 'react-router-dom';
+import { Outlet,Link,useNavigate } from 'react-router-dom';
 
-interface QuizProps {}
+const answers:string[] = []
+interface QuizProps {
+    handleQuizDone:(answers:string[])=>void;
+}
 
-const Quiz = () => {
+const Quiz = ({ handleQuizDone }:QuizProps) => {
+    let navigate = useNavigate();
     const questions = [
         {
             questionText: "What the fuck?",
@@ -27,23 +31,32 @@ const Quiz = () => {
         },
 
     ]
-    const answers:string[] = []
+    
 
     const [currentQuestion,setQuestion] = useState(0);
 
     const handleAnswerClick = (ansVal:string)=>{
-        setQuestion(currentQuestion+1);
         answers.push(ansVal);
+        const nextQuestion:number = currentQuestion + 1;
+        if(nextQuestion === questions.length) {
+            handleQuizDone(answers);
+            navigate('../generate');
+            return;
+        }
+        setQuestion(nextQuestion);
+        
     }
 
 
   return (
-    <div className="quiz-container">
-        <h3 className="question">{questions[currentQuestion].questionText}</h3>
-        <div className="answer-section">
-            {questions[currentQuestion].options.map(ans =>(
-                <button className="answer" onClick={()=>{handleAnswerClick(ans.answerValue)}}>{ans.answerText}</button>
-            ))}
+    <div className="quiz-page">
+        <div className="quiz-container">
+            <h3 className="question">{questions[currentQuestion].questionText}</h3>
+            <div className="answer-section">
+                {questions[currentQuestion].options.map(ans =>(
+                    <button className="answer" onClick={()=>{handleAnswerClick(ans.answerValue)}}>{ans.answerText}</button>
+                ))}
+            </div>
         </div>
     </div>
   )

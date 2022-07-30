@@ -31,7 +31,7 @@ async def callback(state:str,code:str = None, error:str = None,stored_state:str=
     response = req_access_token(code,redirect_uri)
     if "error" in response:
         raise HTTPException(status_code=400,detail=response["error"])
-    return RedirectResponse(url=settings.frontend_url)
+    return RedirectResponse(url=settings.frontend_url+'/quiz')
     
 
 
