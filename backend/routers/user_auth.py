@@ -23,7 +23,7 @@ async def login_user(settings:config.Settings=Depends(config.get_settings)):
     return response
 
 @router.get("/callback")
-async def callback(state:str,code:str = None, error:str = None,stored_state:str=Cookie()):
+async def callback(state:str,code:str = None, error:str = None,stored_state:str=Cookie(),settings:config.Settings=Depends(config.get_settings)):
     if error=="access_denied":
         raise HTTPException(status_code=401)
     elif state != stored_state:
@@ -31,7 +31,7 @@ async def callback(state:str,code:str = None, error:str = None,stored_state:str=
     response = req_access_token(code,redirect_uri)
     if "error" in response:
         raise HTTPException(status_code=400,detail=response["error"])
-    return response
+    return RedirectResponse(url=settings.frontend_url)
     
 
 
