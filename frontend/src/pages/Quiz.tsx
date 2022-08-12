@@ -1,42 +1,78 @@
 import React, { useState } from 'react';
 import { Outlet,Link,useNavigate } from 'react-router-dom';
+import QuestionCard from '../components/QuestionCard';
 
-const answers:string[] = []
+const answers:{}[] = []
 interface QuizProps {
-    handleQuizDone:(answers:string[])=>void;
+    handleQuizDone:(answers:{}[])=>void;
 }
 
 const Quiz = ({ handleQuizDone }:QuizProps) => {
     let navigate = useNavigate();
+
+    // type QuestionItem = {
+    //     questionText:string;
+    //     options:{
+    //         answerText:string;
+    //         answerValue:string;
+    //         }[];
+    //     parameter:string;
+    // }
+
     const questions = [
         {
-            questionText: "What the fuck?",
+            questionText: "Popular tunes?",
             options: [
-                {answerText: "Answer1", answerValue: "Ans1"},
-                {answerText: "Answer2", answerValue: "Ans2"},
-                {answerText: "Answer3", answerValue: "Ans3"},
+                {answerText: "Tried and trued", answerValue: "90"},
+                {answerText: "Somewhere in between", answerValue: "60"},
+                {answerText: "Super fresh", answerValue: "10"},
 
-            ]
+            ],
+            parameter: "popularity",
 
         },
         {
-            questionText: "What the hell?",
+            questionText: "What's the mood?",
             options: [
-                {answerText: "Answer12", answerValue: "Ans12"},
-                {answerText: "Answer22", answerValue: "Ans22"},
-                {answerText: "Answer32", answerValue: "Ans32"},
+                {answerText: "Cheerful", answerValue: "1",},
+                {answerText: "Neutral", answerValue: ".6",},
+                {answerText: "Sad", answerValue: ".2",},
 
-            ]
+            ],
+            parameter: "valence",
+
+        },
+        {
+            questionText: "Specific genre?",
+            options: [
+                {answerText: "Anything goes", answerValue: "any",},
+                {answerText: "Pop", answerValue: "pop",},
+                {answerText: "Rap", answerValue: "rap",},
+
+            ],
+            parameter: "genre",
+
+        },
+        {
+            questionText: "What kind of weather?",
+            options: [
+                {answerText: "Bright and sunny", answerValue: "sunny",},
+                {answerText: "Rainy day in", answerValue: "rainy",},
+                {answerText: "Snowstorm", answerValue: "snowy",},
+
+            ],
+            parameter: "valence",
 
         },
 
+
+
     ]
-    
 
     const [currentQuestion,setQuestion] = useState(0);
 
-    const handleAnswerClick = (ansVal:string)=>{
-        answers.push(ansVal);
+    const handleAnswerClick = (ansVal:string,param:string)=>{
+        answers.push({[param]:ansVal});
         const nextQuestion:number = currentQuestion + 1;
         if(nextQuestion === questions.length) {
             handleQuizDone(answers);
@@ -50,14 +86,9 @@ const Quiz = ({ handleQuizDone }:QuizProps) => {
 
   return (
     <div className="quiz-page">
-        <div className="quiz-container">
-            <h3 className="question">{questions[currentQuestion].questionText}</h3>
-            <div className="answer-section">
-                {questions[currentQuestion].options.map(ans =>(
-                    <button className="answer" onClick={()=>{handleAnswerClick(ans.answerValue)}}>{ans.answerText}</button>
-                ))}
-            </div>
-        </div>
+        {questions.map((q)=>(
+            <QuestionCard question={q.questionText} parameter={q.parameter} options={q.options} handleAnswerClick={handleAnswerClick}/>
+        ))}
     </div>
   )
 }

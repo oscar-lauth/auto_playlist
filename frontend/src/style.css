@@ -6,7 +6,11 @@
     padding: 0px;
     box-sizing: border-box;
 }
-
+.login-container {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
 .login-btn {
     display: block;
     text-decoration: none;
@@ -48,51 +52,89 @@
 
 
 .quiz-page {
-    height:100vh;
+    /* height:100vh; */
     display:flex;
+    flex-direction: column;
     justify-content:center;
     align-items:center;
     font-family: 'Gotham',sans-serif;
-    background-color: #80b196;
+    background-color: slategrey;
 }
 
-.quiz-container {
-    width: min(65vw,500px);
+.question-container {
+    width:min(80vw,1080px);
     display:flex;
     flex-direction: column;
-    padding: 50px;
-    border: 5px solid #1ED760;
-    border-radius: 50px;
-    background-color: #304142;
+    margin:30px 0px;
+    padding: 20px;
+    border: 6px solid #1ED760;
+    border-radius: 30px;
+    background-color: slategrey;
     color:white;
+    box-shadow: 0px 0px 15px 10px #4e4d4d4d;
+-webkit-box-shadow: 0px 0px 15px 10px #4e4d4d4d;
+-moz-box-shadow: 0px 0px 15px 10px #4e4d4d4d;
 }
+
+.question-container:nth-child(1) {
+    border-color: #AAFF00;
+}
+
+.question-container:nth-child(2) {
+    border-color: #FFAA01;
+}
+
+.question-container:nth-child(3) {
+    border-color: #FF01AA;
+}
+
+.question-container:nth-child(4) {
+    border-color: #AA01FF;
+}
+
+.question-container:nth-child(5) {
+    border-color: #00ABFF;
+}
+
 
 .question {
     font-size: min(6vw,30px);
+    margin-bottom: 30px;
 
 }
 
 .answer-section {
-    height:50vh;
     display:flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    margin: 0px 20px;
+    /* justify-content: space-evenly; */
+    margin: 10px 0px 0px 0px;
+    border-color: inherit;
+    flex-basis: content + 15;
 }
 
 .answer {
     padding:10px;
+    margin-right: 30px;
     border-radius:15px;
     font-size: min(4vw,25px);
-    border: 3px solid #1ED760;
-    background-color: #304142;
+    border: 4px solid #1ED760;
+    border-color: inherit;
+    background-color: slategrey;
     color:white;
     transition: .5s;
+    font-family: inherit;
+
+    /* box-shadow: 0px 0px 15px 10px #4e4d4d4d;
+    -webkit-box-shadow: 0px 0px 15px 10px #4e4d4d4d;
+    -moz-box-shadow: 0px 0px 15px 10px #4e4d4d4d; */
 
 }
 
 .answer:hover {
-    background-color: #4d8a8d;
-    color:#202124;
+    background-color: #515b67;
+    /* color:#202124; */
+}
+
+.answer:focus {
+    border-width:7px;
 }
 

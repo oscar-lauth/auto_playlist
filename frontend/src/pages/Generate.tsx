@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 
 interface GenerateProps {
-    params:string[];
+    params:{}[];
 }
 
 const Generate = ({ params }:GenerateProps) => {

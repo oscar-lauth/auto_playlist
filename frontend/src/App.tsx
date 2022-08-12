@@ -4,7 +4,7 @@ import Quiz from './pages/Quiz';
 import Login from './pages/Login';
 import Generate from './pages/Generate';
 
-let answers:string[] = [];
+let answers:{}[] = [];
 function App() {
   return (
      <Router>
