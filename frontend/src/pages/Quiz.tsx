@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { Outlet,Link,useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import QuestionCard from '../components/QuestionCard';
+import axios from 'axios'
 
-const answers:{}[] = []
-interface QuizProps {
-    handleQuizDone:(answers:{}[])=>void;
-}
+let answers:{[parameter:string]:string}[] = []
+// interface QuizProps {
+//     handleQuizDone:(answers:{}[])=>void;
+// }
 
-const Quiz = ({ handleQuizDone }:QuizProps) => {
+const Quiz = () => {
     let navigate = useNavigate();
 
     // type QuestionItem = {
@@ -61,7 +62,18 @@ const Quiz = ({ handleQuizDone }:QuizProps) => {
                 {answerText: "Snowstorm", answerValue: "snowy",},
 
             ],
-            parameter: "valence",
+            parameter: "weatha",
+
+        },
+        {
+            questionText: "Ben?",
+            options: [
+                {answerText: "Yes", answerValue: "sunny",},
+                {answerText: "No", answerValue: "rainy",},
+                {answerText: "Ughh", answerValue: "snowy",},
+
+            ],
+            parameter: "ben",
 
         },
 
@@ -69,26 +81,39 @@ const Quiz = ({ handleQuizDone }:QuizProps) => {
 
     ]
 
-    const [currentQuestion,setQuestion] = useState(0);
-
-    const handleAnswerClick = (ansVal:string,param:string)=>{
-        answers.push({[param]:ansVal});
-        const nextQuestion:number = currentQuestion + 1;
-        if(nextQuestion === questions.length) {
-            handleQuizDone(answers);
-            navigate('../generate');
-            return;
-        }
-        setQuestion(nextQuestion);
-        
+    const handleAnswerClick = (answerValue:string,parameter:string)=>{
+        answers.forEach((ans)=>{
+            if(ans[parameter]!=undefined && ans[parameter]!=answerValue) {
+                ans[parameter]= answerValue;
+                return;
+            }
+        })
+        answers.push({[parameter]:answerValue});
+        // console.log(answers);
     }
 
+    const handleQuizDone = ()=>{
+        console.log(answers);
+        if(answers.length!==questions.length) {
+            console.log("NO");
+            return;
+        }
+        console.log(answers);
+        axios.post('/playlist/Granty').then(res=>{
+            const playlist_id : string = res.data.id;
+            axios.post('/playlist/generate/'+playlist_id).then(res=>{
+            })
+          })
+        
+    }
+            
 
   return (
     <div className="quiz-page">
         {questions.map((q)=>(
             <QuestionCard question={q.questionText} parameter={q.parameter} options={q.options} handleAnswerClick={handleAnswerClick}/>
         ))}
+        <button className="auto-btn" onClick={()=>handleQuizDone()}>Playlist Time</button>
     </div>
   )
 }
