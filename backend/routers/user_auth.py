@@ -18,9 +18,9 @@ async def login_user(settings:config.Settings=Depends(config.get_settings)):
     scope = "user-top-read user-read-private user-read-email playlist-modify-private"
     q_params = f"client_id={settings.client_id}&response_type=code&redirect_uri={redirect_uri}&state={state}&scope={scope}"
     url = f"https://accounts.spotify.com/authorize?{q_params}"
-    response = RedirectResponse(url=url)
-    response.set_cookie(key="stored_state",value=state)
-    return response
+    red_response = RedirectResponse(url=url)
+    red_response.set_cookie(key="stored_state",value=state)
+    return red_response
 
 @router.get("/callback")
 async def callback(state:str,code:str = None, error:str = None,stored_state:str=Cookie(),settings:config.Settings=Depends(config.get_settings)):
@@ -31,7 +31,10 @@ async def callback(state:str,code:str = None, error:str = None,stored_state:str=
     response = req_access_token(code,redirect_uri)
     if "error" in response:
         raise HTTPException(status_code=400,detail=response["error"])
-    return RedirectResponse(url=settings.frontend_url+'/quiz')
+    display_name = response["display_name"];
+    red_response = RedirectResponse(url=settings.frontend_url+'/quiz')
+    red_response.set_cookie(key="display_name",value=display_name)
+    return red_response
     
 
 

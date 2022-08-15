@@ -58,7 +58,7 @@ def init_user(access_token:str,refresh_token:str,expires_in:int)->dict:
     global user
     user = User(u_id=res_dict["id"],access_token_=access_token,refresh_token=refresh_token,expires=expire_time)
 
-    return {"Success": "User Authorized"}
+    return {"display_name": res_dict["display_name"]}
 
 
 # return refreshed access token from Spotify API
