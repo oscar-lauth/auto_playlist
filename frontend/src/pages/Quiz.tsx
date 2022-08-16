@@ -1,26 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QuestionCard from '../components/QuestionCard';
 import axios from 'axios'
 
-let answers:{[parameter:string]:string}[] = []
-// interface QuizProps {
-//     handleQuizDone:(answers:{}[])=>void;
-// }
+let answers:{[parameter:string]:string} = {};
 
 const Quiz = () => {
     let navigate = useNavigate();
 
-    // type QuestionItem = {
-    //     questionText:string;
-    //     options:{
-    //         answerText:string;
-    //         answerValue:string;
-    //         }[];
-    //     parameter:string;
-    // }
-
     const questions = [
+        {
+            questionText: "Private or public?",
+            options: [
+                {answerText: "For the whole world to enjoy", answerValue: "true"},
+                {answerText: "For my eyes only", answerValue: "false"},
+
+            ],
+            parameter: "public",
+
+        },
         {
             questionText: "Popular tunes?",
             options: [
@@ -81,37 +79,40 @@ const Quiz = () => {
 
     ]
 
-    const handleAnswerClick = (answerValue:string,parameter:string)=>{
-        answers.forEach((ans)=>{
-            if(ans[parameter]!=undefined && ans[parameter]!=answerValue) {
-                ans[parameter]= answerValue;
-                return;
-            }
-        })
-        answers.push({[parameter]:answerValue});
-        // console.log(answers);
+    const addAnswer = (param:string,ansVal:string)=>{
+        answers[param] = ansVal;
     }
 
     const handleQuizDone = ()=>{
-        console.log(answers);
-        if(answers.length!==questions.length) {
-            console.log("NO");
+        if(Object.keys(answers).length !== questions.length) {
+            alert("Answer all questions");
             return;
         }
-        console.log(answers);
-        axios.post('/playlist/Granty').then(res=>{
-            const playlist_id : string = res.data.id;
-            axios.post('/playlist/generate/'+playlist_id).then(res=>{
+        const isPublic  = answers.public;
+        axios.post('/playlist/'+playlistName+'?public='+isPublic).then(res=>{
+            const playlistID:string = res.data.id;
+            axios.post('/playlist/generate/'+playlistID).then(res=>{
+                console.log("DONE");
             })
-          })
-        
+        })
     }
+
+    const[playlistName,setPlaylistName] = useState('');
             
 
   return (
     <div className="quiz-page">
+        <div className="question-card">
+            <h3 className="question">What's the name of this playlist?</h3>
+            <input className="ans-input-text" type="text" placeholder="Playlist Name"
+            onChange={(e)=>{
+                e.preventDefault();
+                setPlaylistName(e.target.value);
+            }}/>
+        </div>
         {questions.map((q)=>(
-            <QuestionCard question={q.questionText} parameter={q.parameter} options={q.options} handleAnswerClick={handleAnswerClick}/>
+            <QuestionCard question={q.questionText} parameter={q.parameter} options={q.options} addAnswer={addAnswer}
+            />
         ))}
         <button className="auto-btn" onClick={()=>handleQuizDone()}>Playlist Time</button>
     </div>
