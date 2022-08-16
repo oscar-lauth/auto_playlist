@@ -90,7 +90,7 @@
 }
 
 .auto-btn {
-    display: block;
+    display: inline-block;
     text-decoration: none;
     width: 180px;
     height: 40px;
@@ -219,6 +219,7 @@
 
 }
 
+
 .answer-section {
     display:flex;
     /* justify-content: space-evenly; */
@@ -228,6 +229,7 @@
 }
 
 .answer {
+    display: inline-block;
     padding:10px;
     margin-right: 30px;
     border-radius:15px;
@@ -263,6 +265,12 @@
 .answer:hover {
     background-color: #515b67;
     /* color:#202124; */
+}
+
+.ans-btn input[type='radio'] { display:none; }
+
+.ans-btn input[type='radio']:checked+label {
+    background-color: #515b67;
 }
 
  

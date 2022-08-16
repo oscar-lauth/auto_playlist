@@ -1,19 +1,23 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 interface AnswerBtnProps {
   answerText:string;
   answerValue:string;
   parameter:string;
-  handleAnswerClick:(ansVal:string,param:string)=>void
-  isClicked:boolean;
 }
 
-const AnswerBtn = ( { answerText, answerValue, parameter, handleAnswerClick, isClicked }:AnswerBtnProps) => {
+const AnswerBtn = ( { answerText, answerValue, parameter, }:AnswerBtnProps) => {
 
   return (
-        <button className={"answer"+(isClicked ? " is-clicked":"")} onClick={()=>{handleAnswerClick(answerValue,parameter)}}>
-            {answerText}
-        </button>
+    <div className="ans-btn">
+      <input type="radio"
+      id={answerText}
+      name={parameter}
+      value={answerValue}/>
+      <label htmlFor={answerText} className="answer">
+        {answerText}
+      </label>
+    </div>    
   )
 }
 
