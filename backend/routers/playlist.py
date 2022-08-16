@@ -10,8 +10,8 @@ async def add_songs(p_id:str,size:int=20):
     return response
 
 @router.post("/playlist/{name}",status_code=201,description="Creates new playlist by name")
-async def new_playlist(name:str):
-    response = create_playlist(name)
+async def new_playlist(name:str,public:bool):
+    response = create_playlist(name,is_public=public)
     return response
 
 
