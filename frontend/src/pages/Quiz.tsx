@@ -91,7 +91,7 @@ const Quiz = () => {
         const isPublic  = answers.public;
         axios.post('/playlist/'+playlistName+'?public='+isPublic).then(res=>{
             const playlistID:string = res.data.id;
-            axios.post('/playlist/generate/'+playlistID).then(res=>{
+            axios.post('/playlist/generate/'+playlistID+'?attributes='+answers).then(res=>{
                 console.log("DONE");
             })
         })
@@ -104,7 +104,7 @@ const Quiz = () => {
     <div className="quiz-page">
         <div className="question-card">
             <h3 className="question">What's the name of this playlist?</h3>
-            <input className="ans-input-text" type="text" placeholder="Playlist Name"
+            <input className="ans-input-text" type="text" spellCheck="false" placeholder="Playlist Name"
             onChange={(e)=>{
                 e.preventDefault();
                 setPlaylistName(e.target.value);
