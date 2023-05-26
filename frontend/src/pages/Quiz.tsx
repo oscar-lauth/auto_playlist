@@ -44,34 +44,23 @@ const Quiz = () => {
         {
             questionText: "Specific genre?",
             options: [
-                {answerText: "Anything goes", answerValue: "any",},
-                {answerText: "Pop", answerValue: "pop",},
-                {answerText: "Rap", answerValue: "rap",},
+                {answerText: "Anything goes", answerValue: ".1",},
+                {answerText: "Pop", answerValue: ".1",},
+                {answerText: "Rap", answerValue: ".2",},
 
             ],
-            parameter: "genre",
+            parameter: "acousticness",
 
         },
         {
             questionText: "What kind of weather?",
             options: [
-                {answerText: "Bright and sunny", answerValue: "sunny",},
-                {answerText: "Rainy day in", answerValue: "rainy",},
-                {answerText: "Snowstorm", answerValue: "snowy",},
+                {answerText: "Bright and sunny", answerValue: ".6",},
+                {answerText: "Rainy day in", answerValue: ".3",},
+                {answerText: "Snowstorm", answerValue: ".2",},
 
             ],
-            parameter: "weatha",
-
-        },
-        {
-            questionText: "Ben?",
-            options: [
-                {answerText: "Yes", answerValue: "sunny",},
-                {answerText: "No", answerValue: "rainy",},
-                {answerText: "Ughh", answerValue: "snowy",},
-
-            ],
-            parameter: "ben",
+            parameter: "danceability",
 
         },
 
@@ -89,9 +78,11 @@ const Quiz = () => {
             return;
         }
         const isPublic  = answers.public;
+        delete answers.public;
+        const attr = answers;
         axios.post('/playlist/'+playlistName+'?public='+isPublic).then(res=>{
             const playlistID:string = res.data.id;
-            axios.post('/playlist/generate/'+playlistID+'?attributes='+answers).then(res=>{
+            axios.post('/playlist/generate/'+playlistID,attr).then(res=>{
                 console.log("DONE");
             })
         })
