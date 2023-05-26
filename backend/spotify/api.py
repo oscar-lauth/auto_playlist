@@ -1,3 +1,4 @@
+from msilib.schema import Error
 from xmlrpc.client import Boolean
 import requests
 import time
@@ -106,16 +107,19 @@ def add_songs_to_playlist(p_id:str,song_uris:list[str])->dict:
     return res_dict
 
 # get recommendations from build_seed
-def get_recommendations(limit:int=20)->dict:
+def get_recommendations(attributes:dict,limit:int=20)->dict:
 
     # forming GET request
     url = spotify_base_url + "/recommendations"
     params = build_seed([3,2,0])
     params.update({"limit":limit})
+    params.update(attributes)
     headers = {"Authorization":f"Bearer {user.access_token}","Content-Type":"application/json"}
     response = requests.get(url,params=params,headers=headers)
 
     res_dict = response.json()
+    if "error" in res_dict:
+        raise Error
     return res_dict
 
 # get top tracks
@@ -195,20 +199,36 @@ def build_seed(num_values:list[int])->dict:
     return {"seed_tracks":seed_tracks,"seed_artists":seed_artists,"seed_genres":seed_genres}
 
 # parse song uri's from recommendations : add {size} number of uri's to playlist
-def generate_playlist(p_id:str,size:int=20)->dict:
+def generate_playlist(p_id:str,raw_attributes:dict,size:int=20)->dict:
 
     song_uris:list[str]=[]
-    raw_recs:dict=get_recommendations(size)
+    attributes:dict = parse_attributes(raw_attributes)
+    raw_recs:dict=get_recommendations(attributes,size)
 
     for track in raw_recs["tracks"]:
         song_uris.append(track["uri"])
         
     return add_songs_to_playlist(p_id,song_uris)
 
+# parse and reformat raw track attributes from frontend
+def parse_attributes(raw_attributes:dict) -> dict:
+    attributes:dict = {}
+    for k,v in raw_attributes.items():
+        if(is_number(v)):
+            num = float(v)
+            attributes["max_"+k] = min(num+.5,1)
+            attributes["target_"+k] = num
+            attributes["min_"+k] = max(num-.5,0)
+        else:
+            attributes[k]=v
+    return attributes
 
-
-
-
+def is_number(num:str)->bool:
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
 
 
 
