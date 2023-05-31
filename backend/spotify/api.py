@@ -48,7 +48,7 @@ class User(BaseModel):
 spotify_base_url = "https://api.spotify.com/v1"
 
 # creates new User with passed tokens and profile data from Spotify API
-def init_user(access_token:str,refresh_token:str,expires_in:int)->dict:
+def init_user(access_token:str,refresh_token:str,expires_in:int)->User:
 
     expire_time = int(time.time()) + expires_in
 
@@ -126,7 +126,7 @@ def get_recommendations(request:Request,attributes:dict,limit:int=20)->dict:
     
     # forming GET request
     url = spotify_base_url + "/recommendations"
-    params = build_seed(user,[3,2,0])
+    params = build_seed(request,[3,2,0])
     params.update({"limit":limit})
     params.update(attributes)
     headers = {"Authorization":f"Bearer {user.access_token}","Content-Type":"application/json"}
@@ -213,15 +213,22 @@ def get_seed_artists_and_genres(user:User,top_artists_raw:dict)->dict:
     return {"artist_ids":artist_ids,"genres":genres}
 
 # build seed from seed tracks,artists,genres : use num_values to determine number of each seed type
-def build_seed(user:User,num_values:list[int])->dict:
-
+def build_seed(request:Request,num_values:list[int])->dict:
+    
+    # parsing the User from the session from request
+    user_json = request.session.get("user")
+    if user_json:
+        user = User.parse_raw(user_json)
+    else:
+        return {"Message": "User data not found"}
+    
     if(len(num_values)!=3 or sum(num_values)>5):
         return ["Error, invalid parameters"]
 
     (n_tracks,n_artists,n_genres) = num_values
 
-    seed_tracks = get_seed_tracks(get_top_tracks_raw())[:n_tracks]
-    seed_artists_genres_dict = get_seed_artists_and_genres(user,get_top_artists_raw())
+    seed_tracks = get_seed_tracks(get_top_tracks_raw(request))[:n_tracks]
+    seed_artists_genres_dict = get_seed_artists_and_genres(user,get_top_artists_raw(request))
     seed_artists = seed_artists_genres_dict["artist_ids"][:n_artists]
     seed_genres = seed_artists_genres_dict["genres"][:n_genres]
 

@@ -1,12 +1,12 @@
 # from . import api
-from .api import init_user
+from .api import User, init_user
 import requests
 # import json
 import base64
 import config
 
 
-def req_access_token(code:str,redirect_uri:str)->dict:
+def req_access_token(code:str,redirect_uri:str)->User:
     settings:config.Settings = config.get_settings()
     auth_params = {
         "grant_type":"authorization_code",
