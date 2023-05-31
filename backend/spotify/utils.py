@@ -1,4 +1,5 @@
 # from . import api
+from fastapi import Request
 from .api import User, init_user
 import requests
 # import json
@@ -6,7 +7,7 @@ import base64
 import config
 
 
-def req_access_token(code:str,redirect_uri:str)->User:
+def req_access_token(code:str,redirect_uri:str) -> User:
     settings:config.Settings = config.get_settings()
     auth_params = {
         "grant_type":"authorization_code",
@@ -21,6 +22,15 @@ def req_access_token(code:str,redirect_uri:str)->User:
     if("error" in res_dict):
         return res_dict
     return init_user(res_dict["access_token"],res_dict["refresh_token"],res_dict["expires_in"])
+
+def get_user_from_session(request: Request) -> User:
+
+    # parsing the User from the session from request
+    user_json = request.session.get("user")
+    if user_json:
+        return User.parse_raw(user_json)
+    else:
+        return None
     
 
 
