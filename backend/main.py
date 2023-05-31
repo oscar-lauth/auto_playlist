@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import songs, user_auth, playlist
+from starlette.middleware.sessions import SessionMiddleware
+from api import songs, user_auth, playlist
 import uvicorn
 import config
 
@@ -17,6 +18,10 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.secret_key
 )
 
 app.include_router(songs.router)
