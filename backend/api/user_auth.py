@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends, Cookie, Request
 from fastapi.responses import RedirectResponse
 import random
 import string
+from spotify.api import User
 from spotify.utils import req_access_token
 import config
 
@@ -28,11 +29,11 @@ async def callback(request: Request,state:str,code:str = None, error:str = None,
         raise HTTPException(status_code=403)
     elif state != stored_state:
         raise HTTPException(status_code=401,detail="state mismatch")
-    user = req_access_token(code,redirect_uri)
+    user:User = req_access_token(code,redirect_uri)
     request.session["user"] = user.json()
     if "error" in user:
         raise HTTPException(status_code=400,detail=user["error"])
-    display_name = user["display_name"];
+    display_name = user.display_name;
     redir_response = RedirectResponse(url=settings.frontend_url+'/quiz')
     redir_response.set_cookie(key="display_name",value=display_name)
     return redir_response
