@@ -119,7 +119,7 @@ def get_recommendations(attributes:dict,limit:int=20)->dict:
 
     res_dict = response.json()
     if "error" in res_dict:
-        raise Error
+        return {"Error":"get_recommendations error"}
     return res_dict
 
 # get top tracks
