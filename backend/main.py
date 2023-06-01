@@ -21,7 +21,8 @@ app.add_middleware(
 )
 app.add_middleware(
     SessionMiddleware,
-    secret_key=settings.secret_key
+    secret_key=settings.secret_key,
+    max_age=3600,
 )
 
 app.include_router(songs.router)
