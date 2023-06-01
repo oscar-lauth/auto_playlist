@@ -1,6 +1,6 @@
 from msilib.schema import Error
 from xmlrpc.client import Boolean
-from fastapi import Request
+from fastapi import HTTPException, Request
 import requests
 import time
 from pydantic import BaseModel
@@ -115,10 +115,15 @@ def get_recommendations(user:User,attributes:dict,limit:int=20)->dict:
     params = build_seed(user,[3,2,0])
     params.update({"limit":limit})
     params.update(attributes)
+    print("params",params)
     headers = {"Authorization":f"Bearer {user.access_token}","Content-Type":"application/json"}
     response = requests.get(url,params=params,headers=headers)
+    print(url)
+    print(params)
+    print(headers)
 
     res_dict = response.json()
+    print("In get_rec,",res_dict)
     if "error" in res_dict:
         return {"Error":"get_recommendations error"}
     return res_dict
@@ -204,8 +209,13 @@ def generate_playlist(user:User,p_id:str,raw_attributes:dict,size:int=20)->dict:
 
     song_uris:list[str]=[]
     attributes:dict = parse_attributes(raw_attributes)
+    print("In gen_playlist:")
+    print("attributes:",attributes)
+    
     raw_recs:dict=get_recommendations(user,attributes,size)
-
+    print("raw_recs",raw_recs)
+    if "Error" in raw_recs:
+        raise HTTPException(status_code=502,detail="get_recommendations error")
     for track in raw_recs["tracks"]:
         song_uris.append(track["uri"])
         
@@ -216,10 +226,13 @@ def parse_attributes(raw_attributes:dict) -> dict:
     attributes:dict = {}
     for k,v in raw_attributes.items():
         if(is_number(v)):
-            num = float(v)
-            attributes["max_"+k] = min(num+.5,1)
-            attributes["target_"+k] = num
-            attributes["min_"+k] = max(num-.5,0)
+            if k == "popularity":
+                attributes["target_"+k] = int(v)
+            else:
+                attributes["target_"+k] = float(v)
+            # attributes["max_"+k] = min(num+.5,1)
+            # attributes["target_"+k] = num
+            # attributes["min_"+k] = max(num-.5,0)
         else:
             attributes[k]=v
     return attributes
