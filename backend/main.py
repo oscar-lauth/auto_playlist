@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from api import songs, user_auth, playlist
+from api import songs, auth, playlist
 import uvicorn
 import config
 
@@ -26,12 +26,8 @@ app.add_middleware(
 )
 
 app.include_router(songs.router)
-app.include_router(user_auth.router)
+app.include_router(auth.router)
 app.include_router(playlist.router)
-
-# @app.on_event("startup")
-# async def startup_event():
-#     session = aiohttp.ClientSession()
 
 @app.get("/test")
 async def test():
@@ -45,8 +41,8 @@ async def root():
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
-        host="localhost",
-        port=8000,
+        host=settings.backend_host,
+        port=settings.backend_port,
         log_level="info",
         reload=True
     )

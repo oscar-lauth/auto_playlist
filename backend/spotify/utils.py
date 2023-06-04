@@ -1,13 +1,13 @@
-# from . import api
 from fastapi import Request
-from .api import User, init_user
+from .api import init_user
+from schemas.user import User
 import requests
-# import json
 import base64
 import config
 
 
 def req_access_token(code:str,redirect_uri:str) -> User:
+
     settings:config.Settings = config.get_settings()
     auth_params = {
         "grant_type":"authorization_code",
