@@ -5,9 +5,8 @@ from spotify.utils import get_user_from_session
 
 router = APIRouter()
 
-@router.post("/playlist/generate/{p_id}",status_code=201,description="Add songs")
+@router.post("/playlist/generate/{p_id}",status_code=201,description="Populate the playlist")
 async def add_songs(request: Request, p_id:str,attributes:dict,size:int=20):
-    print(attributes)
     user = get_user_from_session(request)
     if user is None:
         raise HTTPException(status_code=401, detail="User session data not found")
