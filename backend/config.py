@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     client_secret:str
     frontend_url:str
     secret_key:str
+    backend_host:str
+    backend_port:int
 
     class Config:
         env_file = '.env'
