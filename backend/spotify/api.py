@@ -75,15 +75,10 @@ def get_recommendations(user:User,attributes:dict,limit:int=20) -> dict:
     params = build_seed(user,[3,2,0])
     params.update({"limit":limit})
     params.update(attributes)
-    print("params",params)
     headers = {"Authorization":f"Bearer {user.access_token}","Content-Type":"application/json"}
     response = requests.get(url,params=params,headers=headers)
-    print(url)
-    print(params)
-    print(headers)
 
     res_dict = response.json()
-    print("In get_rec,",res_dict)
     if "error" in res_dict:
         return {"Error":"get_recommendations error"}
     return res_dict
@@ -169,11 +164,9 @@ def generate_playlist(user:User,p_id:str,raw_attributes:dict,size:int=20) -> dic
 
     song_uris:list[str]=[]
     attributes:dict = parse_attributes(raw_attributes)
-    print("In gen_playlist:")
-    print("attributes:",attributes)
     
     raw_recs:dict=get_recommendations(user,attributes,size)
-    print("raw_recs",raw_recs)
+
     if "Error" in raw_recs:
         raise HTTPException(status_code=502,detail="get_recommendations error")
     for track in raw_recs["tracks"]:
