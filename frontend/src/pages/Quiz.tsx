@@ -82,8 +82,9 @@ const Quiz = () => {
         const attr = answers;
         axios.post('/playlist/'+playlistName+'?public='+isPublic).then(res=>{
             const playlistID:string = res.data.id;
+            const playlistURL:string = res.data.external_urls.spotify;
             axios.post('/playlist/generate/'+playlistID,attr).then(res=>{
-                console.log("DONE");
+                window.location.replace(playlistURL);
             })
         })
     }
