@@ -5,7 +5,7 @@ const PlaylistButton = () => {
   return (
     <div className="playlist-btn-bar">
       {btn==="login" ? 
-      <a href="http://localhost:8000/login" className="login-btn">LOGIN</a> :
+      <a href={process.env.REACT_APP_BACKEND_URL+"/login"} className="login-btn">LOGIN</a> :
       btn==="generate" ?
       <a href="" className="generate-btn">Generate</a> : 
       <a href="" className="play-btn">Play</a>

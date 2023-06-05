@@ -14,7 +14,7 @@ const Home = ({ displayName }:HomeProps) => {
         <p className="summary-text">Just login with Spotify and take a short quiz. We'll handle the rest.</p>
       </div>
       <div className="home-btn-container">
-      {displayName ? null : <a href="http://localhost:8000/login" className="login-btn">LOGIN</a> }
+      {displayName ? null : <a href={process.env.REACT_APP_BACKEND_URL+"/login"} className="login-btn">LOGIN</a> }
       </div>
       { displayName ? <Quiz/> : null}
     </div>

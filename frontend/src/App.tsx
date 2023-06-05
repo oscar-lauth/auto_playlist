@@ -1,10 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import Quiz from './pages/Quiz';
 import Home from './pages/Home';
 import Generate from './pages/Generate';
 import Header from './components/Header';
-import Footer from './components/Footer';
 import Cookies from 'js-cookie';
 
 let answers:{}[] = [];
