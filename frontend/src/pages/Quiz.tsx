@@ -6,7 +6,7 @@ import axios from 'axios'
 let answers:{[parameter:string]:string} = {};
 
 const Quiz = () => {
-    let navigate = useNavigate();
+    // let navigate = useNavigate();
 
     const questions = [
         {
